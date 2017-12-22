@@ -75,8 +75,8 @@
         <splash density="port-xhdpi" src="res/screens/android/screen-xhdpi-portrait.png" />
     </platform>
     <platform name="android">
-    <resource-file src="google-services.json" target="google-services.json" />
-  </platform>
+        <resource-file src="google-services.json" target="google-services.json" />
+    </platform>
     <platform name="ios">
         <splash height="480" src="res/screens/ios/screen-iphone-portrait.png" width="320" />
         <splash height="960" src="res/screens/ios/screen-iphone-portrait-2x.png" width="640" />
@@ -97,6 +97,8 @@
     <platform name="wp8">
         <splash height="800" src="res/screens/wp8/SplashScreenImage.jpg" width="480" />
     </platform>
-    <plugin name="cordova-plugin-ms-azure-mobile-apps" spec="~2.0.0" />
-    <plugin name="phonegap-plugin-push" spec="^2.1.2" />
+    <plugin name="phonegap-plugin-push" spec="^2.1.2" src="https://github.com/phonegap/phonegap-plugin-push.git">
+        <variable name="892697691399" value="cordovaazurepushnotification" />
+    </plugin>
+    <plugin name="cordova-plugin-ms-azure-mobile-apps" spec="^2.0.0" />
 </widget>
