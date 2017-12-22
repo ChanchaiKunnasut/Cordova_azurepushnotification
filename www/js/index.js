@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-(function() {
+(function () {
     "use strict";
 
     var client, // Connection to the Azure Mobile App backend
@@ -65,7 +65,7 @@
                 complete: 'boolean',
                 version: 'string'
             }
-        }).then(function() {
+        }).then(function () {
             // Initialize the sync context
             syncContext = client.getSyncContext();
 
@@ -85,7 +85,7 @@
             return syncContext.initialize(store);
         });
     }
-    
+
     /**
      * Set up the tables, event handlers and load data from the server 
      */
@@ -104,6 +104,52 @@
         // Wire up the UI Event Handler for the Add Item
         $('#add-item').submit(addItemHandler);
         $('#refresh').on('click', refreshDisplay);
+        // Added to register for push notifications. 22-12-2017: Azure push notification.
+        registerForPushNotifications();
+    }
+
+    // Register for Push Notifications. Requires that phonegap-plugin-push be installed.
+    var pushRegistration = null;
+    function registerForPushNotifications() {
+        pushRegistration = PushNotification.init({
+            android: { senderID: 'cordovaazurepushnotification' },
+            ios: { alert: 'true', badge: 'true', sound: 'true' },
+            wns: {}
+        });
+
+        // Handle the registration event.
+        pushRegistration.on('registration', function (data) {
+            // Get the native platform of the device.
+            var platform = device.platform;
+            // Get the handle returned during registration.
+            var handle = data.registrationId;
+            // Set the device-specific message template.
+            if (platform == 'android' || platform == 'Android') {
+                // Register for GCM notifications.
+                client.push.register('gcm', handle, {
+                    mytemplate: { body: { data: { message: "{$(messageParam)}" } } }
+                });
+            } else if (device.platform === 'iOS') {
+                // Register for notifications.
+                client.push.register('apns', handle, {
+                    mytemplate: { body: { aps: { alert: "{$(messageParam)}" } } }
+                });
+            } else if (device.platform === 'windows') {
+                // Register for WNS notifications.
+                client.push.register('wns', handle, {
+                    myTemplate: {
+                        body: '<toast><visual><binding template="ToastText01"><text id="1">$(messageParam)</text></binding></visual></toast>',
+                        headers: { 'X-WNS-Type': 'wns/toast' }
+                    }
+                });
+            }
+        });
+
+        pushRegistration.on('notification', function (data, d2) {
+            alert('Push Received: ' + data.message);
+        });
+
+        pushRegistration.on('error', handleError);
     }
 
     /**
@@ -118,7 +164,7 @@
             syncLocalTable().then(displayItems);
         } else {
             displayItems();
-        }    
+        }
     }
 
     /**
@@ -128,12 +174,12 @@
      */
     function syncLocalTable() {
         return syncContext
-                    .push()
-                    .then(function() {
-                        return syncContext.pull(new WindowsAzure.Query(tableName));
-                    });
+            .push()
+            .then(function () {
+                return syncContext.pull(new WindowsAzure.Query(tableName));
+            });
     }
-    
+
     /**
      * Displays the todo items
      */
@@ -144,7 +190,7 @@
             .read()                         // Read the results
             .then(createTodoItemList, handleError);
     }
-    
+
     /**
      * Updates the Summary Message
      * @param {string} msg the message to use
