@@ -1,0 +1,12 @@
+{
+    "name": "ZUMOAPPNAME",
+    "version": "1.0.0",
+    "dependencies": {
+        "phonegap-plugin-push": "^2.1.2"
+    },
+    "cordova": {
+        "plugins": {
+            "phonegap-plugin-push": {}
+        }
+    }
+}
