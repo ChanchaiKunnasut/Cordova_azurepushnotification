@@ -100,5 +100,5 @@
     <plugin name="phonegap-plugin-push" spec="^2.1.2" src="https://github.com/phonegap/phonegap-plugin-push.git">
         <variable name="892697691399" value="cordovaazurepushnotification" />
     </plugin>
-    <plugin name="cordova-plugin-ms-azure-mobile-apps" spec="2.0.0" />
+    <plugin name="azure-mobile-apps-cordova-client" />
 </widget>
